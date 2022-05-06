@@ -28,7 +28,7 @@ main {
     flex-direction: column;
     background: linear-gradient(180deg, rgba(0, 65, 25, 1) 28%, rgba(0, 65, 255, 1) 68%);
     border-radius: 3vw;
-    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
+    font-family: "Candara",'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
 }
 
 #playground {
@@ -49,23 +49,47 @@ main {
 }
 
 #barraInformazioni {
-    display: flex;
     height: 2.7vw;
     background-color: white;
     width: 100%;
     border-radius: 2vw;
     border-bottom: 0.5vw solid rgb(192, 212, 255);
-    flex-direction: row;
+    font-family: "Candara";
+    font-weight: bold;
+}
+
+#barraInformazioni.selezionaLivello{
     text-align: center;
+    font-size: 2vw;
+   
+}
+
+#barraInformazioni.gioco {
+    display: flex;
+}
+
+.vite{
+    position: relative;
+    font-size: 3vw;
 }
 
 #contaVite {
     position: relative;
-    left: 2vw;
-    width: 50%;
-    font-size: 1.6vw;
-    
+    left: 2.5vw;
+    bottom: 0.7vw;
+    width: 50%;    
 }
+
+#divPunteggio{
+    float: left;
+}
+
+#divRecord{
+    float: left;
+    clear: left;
+}
+
+
 
 /* #punteggio, #x, #vite {
     display: inline;
@@ -163,14 +187,6 @@ main {
     background-color: goldenrod;
 }
 
-/* 
-p {
-    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-    font-size: 2.5vw;
-    margin: 0;
-    text-align: center;
-} */
-
 #highscore {
     text-align: center;
     font-size: 3em;
@@ -232,3 +248,23 @@ img {
 .a {
     font-size: 5vw;
 }
+
+#risultato{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    margin: auto;
+    width: 20vw;
+    position: relative;
+    top: 5vw;
+    border: inherit;
+    border-radius: inherit;
+    height: 25vw;
+}
+
+.finePartita{
+    text-align: center;
+    color: white;
+    font-size: 2vw;
+}
+
