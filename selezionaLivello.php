@@ -26,8 +26,8 @@ while ($row = mysqli_fetch_assoc($result)) {
 <body id="body"></body>
 
 <div id="main">
-    <div id="barraInformazioni">
-        SELEZIONA LIVELLO
+    <div id="barraInformazioni" class="selezionaLivello">
+        <text>SELEZIONA LIVELLO</text>
     </div>
     <div id="playground">
         <table>

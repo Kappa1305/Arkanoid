@@ -20,10 +20,14 @@ function livello2(blocks) {
     return b;
 }
 
-function livello3(blocks) {
+function livelloTest0(blocks) {
     let b = 0;
     blocks[b++] = new Block(22, 30, "blue")
     return b;
+}
+
+function livelloTest1(){
+    return 1;
 }
 
 function livello4(blocks) {

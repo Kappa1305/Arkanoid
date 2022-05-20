@@ -1,11 +1,10 @@
 <?php
+    $host = "localhost";
+    $database = "arkanoid";
+    $user = "root";
+    $pass  = "";
 
-    $user = 'root';
-    $pass = '';
-    $db = 'arkanoid';
-    $host = 'localhost';
-
-    $connection = new mysqli($host, $user, $pass, $db);
+    $connection = mysqli_connect($host, $user, $pass, $database);
 
     session_start();
 

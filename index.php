@@ -3,6 +3,7 @@
 
 <head>
     <meta name="description" content="Tavola Pitagorica">
+    <script type="text/javascript" src="./js/controlloDati.js"></script>
     <link rel="stylesheet" href="./pong.css">
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
@@ -14,11 +15,15 @@
     <div id="main">
         <div id="barraInformazioni"></div>
         <div id="playground">
+            <img src="immagini/logo.svg" id="logo">
             <div id="login">
-                <form action="index.php" method="POST">
-                    username:<input type="text" name="uname" /><br>
-                    password:<input type="password" name="psw" /><br>
-                    <input type="submit" value="Login" />
+                <form action="index.php" method="POST" name="moduloLogin">
+                    username
+                    <input type="text" name="uname" id="INusername"/><br>
+                    password
+                    <input type="password" name="psw" id="INpassword"/><br>
+                    <button value="Login" onclick="controlloDatiLogin()">Login</button>
+                    <p>Non hai ancora un account?</p>
                     <button value="true" name="registrazione">Registrazione</button>
                 </form>
             </div>
@@ -29,44 +34,16 @@
 
 
 <?php
-function dbConnect()
+
+
+function registrazione()
 {
-    $host = "localhost";
-    $database = "arkanoid";
-    $user = "root";
-    $pass  = "";
-
-    $connection = mysqli_connect($host, $user, $pass, $database);
-
-    session_start();
-
-    if (mysqli_connect_errno()) {
-        die(mysqli_connect_error());
-    }
-    return $connection;
-}
-
-function registrazione($uname, $psw)
-{
-    $connection = dbConnect();
-    $pswHashed = password_hash($psw, PASSWORD_BCRYPT);
-    $sql = "INSERT INTO user VALUES (?, ?)";
-    $statement = mysqli_prepare($connection, $sql);
-    mysqli_stmt_bind_param($statement, 'ss', $uname, $pswHashed);
-    if (!mysqli_stmt_execute($statement)) {
-        echo ("<script>alert('Errore: utente già registrato'); window.history.back(); </script>");
-        exit();
-    }
-    $sql = "INSERT INTO sbloccato VALUE(" . "'" . $uname . "'" . ", 1, null)";
-    mysqli_query($connection, $sql);
-    echo ("<script>alert('Utente registrato con successo'); window.history.back(); </script>");
-    exit();
+    header("location: ./registrazione.php");
 }
 
 function login($uname, $psw)
 {
-
-    $connection = dbConnect();
+    require_once "./connection.php";
     $sql = "SELECT hash_psw FROM user WHERE username = ?";
     if ($statement = mysqli_prepare($connection, $sql)) {
         mysqli_stmt_bind_param($statement, 's', $uname);
@@ -86,6 +63,8 @@ function login($uname, $psw)
 }
 
 if ($_POST) {
+    if (isset($_POST["registrazione"]))
+        registrazione($uname, $psw);
     $uname = $_POST["uname"];
     $psw = $_POST["psw"];
 
@@ -102,11 +81,7 @@ if ($_POST) {
                 </script>");
         exit();
     }
-
-    if (isset($_POST["registrazione"]))
-        registrazione($uname, $psw);
-    else
-        login($uname, $psw);
+    login($uname, $psw);
 }
 ?>
 </table>

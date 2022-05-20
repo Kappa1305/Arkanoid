@@ -14,11 +14,12 @@ function Game(level) {
     this.ball = new Array;
     this.ball[0] = new Ball();
     this.player = new Player(PLAYERLENGTH);
-    this.player.fermaball(this.ball[0], 0.5);
+    this.player.fermaball(this.ball[0], 0.45);
     this.blocks = new Array;
     this.powerUP = new Array;
     this.ballAttive = 1;
     this.proiettiliToSend = 0;
+    this.punteggio = 0;
     this.selezionaLivello();
     document.addEventListener('mousemove', this.mouseMove.bind(this));
     document.addEventListener('mousedown', this.mouseDown.bind(this));
@@ -43,15 +44,15 @@ Game.prototype.selezionaLivello =
         this.powerUP = new Array;
         switch (this.level) {
             case 0: this.rimasti = livello0(this.blocks); break;
-            case 1: this.rimasti = livello1(this.blocks); break;
+            case 1: this.rimasti = livelloTest1(this.blocks); break;
             case 2: this.rimasti = livello2(this.blocks); break;
-            case 3: this.rimasti = livello3(this.blocks); break;
+            case 3: this.rimasti = livelloTest0(this.blocks); break;
             case 4: this.rimasti = livello4(this.blocks); break;
             case 5: this.rimasti = livello5(this.blocks); break;
             case 6: this.rimasti = livello6(this.blocks); break;
-            case 7: this.rimasti = livello3(this.blocks); break;
-            case 8: this.rimasti = livello3(this.blocks); break;
-            case 9: this.rimasti = livello3(this.blocks); break;
+            case 7: this.rimasti = livello7(this.blocks); break;
+            case 8: this.rimasti = livelloTest0(this.blocks); break;
+            case 9: this.rimasti = livelloTest0(this.blocks); break;
             default: this.terminaPartita(1); return;
         }
         this.movimento = setInterval(this.clock.bind(this), clockTime);
@@ -72,7 +73,7 @@ Game.prototype.clock =
                         this.ball = new Array;
                         this.ball[0] = new Ball();
                         this.ballAttive = 1;
-                        this.ball[0].x = 14.5
+                        this.ball[0].x = 14.6
                         this.ball[0].y = 8
                         this.ball[0].node.style.left = this.x + "vw";
                         this.ball[0].node.style.bottom = this.y + "vw";
@@ -150,17 +151,9 @@ Game.prototype.creaProiettili =
 
 
 Game.prototype.prossimoLivello =
-    function () {
-        this.azzeraPlayground(true);
-        this.ball = new Array;
-        this.ball[0] = new Ball();
-        this.ball[0].azzeraPosizione();
-        this.player.reset();
-        this.player.fermaball(this.ball[0], 0.5);
-        // voglio che parta da una direzione di salita e non voglio sia troppo orizzontale
-        this.ball[0].dir = (Math.random() * (Math.PI - 0.30) + 0.15);
-        this.level++;
-        this.selezionaLivello(this.blocks);
+    function (e) {
+        while (playground.firstChild) { playground.removeChild(playground.firstChild); } 
+        new Game(this.level+1);
     }
 
 Game.prototype.vitaPersa =
@@ -168,7 +161,7 @@ Game.prototype.vitaPersa =
         this.azzeraPlayground(false);
         this.player.x = PLAYGROUNDWIDTH / 2 - this.player.length / 2;
         this.player.node.style.left = this.player.x + "vw";
-        this.player.fermaball(this.ball[0], 0.5);
+        this.player.fermaball(this.ball[0], 0.45);
         vite = document.getElementById("vite");
         if (this.lives-- == 0) {
             this.terminaPartita(0);
@@ -217,6 +210,7 @@ function aggiornaRecordESbloccati(livello, punteggio){
 Game.prototype.terminaPartita =
     function (esito) {
         this.azzeraPlayground(true);
+        playground.removeChild(this.player.node);
         aggiornaRecordESbloccati(this.level, document.getElementById("punteggio").textContent)
         // Elimino le informazioni
         // var daRimuovere = document.getElementById('informazioni');
@@ -247,20 +241,32 @@ Game.prototype.terminaPartita =
                     this.moneteScritta.appendChild(this.moneteTesto); 
                     this.risultatiNode.appendChild(this.moneteScritta);
                  */
-        // Creo il tasto per tornare alla schermata principale
-        this.ritornoScritta = document.createElement('h1');
-        this.ritornoScritta.setAttribute('class', 'font size3 shadow4 pointer exit');
-        this.ritornoTesto = document.createTextNode('CONTINUA');
-        this.ritornoScritta.appendChild(this.ritornoTesto);
-        this.risultatiNode.appendChild(this.ritornoScritta);
+        
+                    // Creo il tasto per tornare alla schermata principale
 
-        // Chiamo la funzione per aggiornare nel database le monete e i metri
-        //aggiornaDatabaseMoneteMetri(metri, monete);
+        this.ritornoScritta = new Array(3);
+        this.ritornoTesto = new Array(3);
+        this.ritornoScritta[0] = document.createElement('h1');
+        this.ritornoScritta[0].setAttribute('class', 'finePartita');
+        this.ritornoTesto[0] = document.createTextNode('PROSSIMO LIVELLO');
+        this.ritornoScritta[0].appendChild(this.ritornoTesto[0]);
+        this.risultatiNode.appendChild(this.ritornoScritta[0]);
+        this.ritornoScritta[0].addEventListener('click', this.prossimoLivello.bind(this));
 
-        this.ritornoScritta.setAttribute('onclick', "window.location.href = 'selezionaLivello.php'");
-        p = document.createElement("p");
-        p.setAttribute("id", "testoFinePartita")
-        playground.appendChild(p);
+        this.ritornoScritta[1] = document.createElement('h1');
+        this.ritornoScritta[1].setAttribute('class', 'finePartita');
+        this.ritornoTesto[1] = document.createTextNode('SELEZIONA LIVELLO');
+        this.ritornoScritta[1].appendChild(this.ritornoTesto[1]);
+        this.risultatiNode.appendChild(this.ritornoScritta[1]);
+        this.ritornoScritta[1].setAttribute('onclick', "window.location.href = 'selezionaLivello.php'");
+
+        this.ritornoScritta[2] = document.createElement('h1');
+        this.ritornoScritta[2].setAttribute('class', 'finePartita');
+        this.ritornoTesto[2] = document.createTextNode('VISUALIZZA CLASSIFICA');
+        this.ritornoScritta[2].appendChild(this.ritornoTesto[2]);
+        this.risultatiNode.appendChild(this.ritornoScritta[2]);
+        testoClassifica = "window.location.href = 'classifica?livello='"+this.level+"'"
+        this.ritornoScritta[2].setAttribute('onclick', "window.location.href = 'classifica.php?livello="+this.level+"'");
     }
 
 Game.prototype.attivaProiettili =

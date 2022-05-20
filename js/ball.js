@@ -1,4 +1,4 @@
-function Ball(x = PLAYGROUNDWIDTH/2 - BALLWIDTH/2, y = 8, dir = 1, ferma = true) {
+function Ball(x = (PLAYGROUNDWIDTH - BALLWIDTH) / 2, y = 8, dir = 1, ferma = true) {
     this.x = 0;
     this.y = 0;
     this.dir = 0;
@@ -40,14 +40,15 @@ Ball.prototype.aggiornaInc =
 // posizione virtuale non è corretta a schermo non verrà mostrata finchè non è stata corretta
 Ball.prototype.muovi =
     function (blocks, player) {
-        // calcolo nuova posizione, evito che vada oltre il muro prima di rimbalzare
+        // calcolo nuova posizione
         this.x += this.incX
-        //this.x = this.x > PLAYGROUNDWIDTH - BALLWIDTH ? PLAYGROUNDWIDTH - BALLWIDTH : this.x;
-        //this.x = this.x < 0 ? 0 : this.x;
         this.y += this.incY;
-        //this.y = this.y > PLAYGROUNDHEIGHT - BALLWIDTH ? PLAYGROUNDHEIGHT - BALLWIDTH: this.y;
-        // rimbalzo contro i muri laterali
+
+        // memorizzo la vecchia direzione, mi servirà alla fine per sapere se devo ricalcolare
+        // gli incrementi
         let lastDir = this.dir;
+
+        // rimbalzo contro i muri laterali ?
         if (this.x + BALLWIDTH >= PLAYGROUNDWIDTH || this.x <= 0) {
             this.x = this.x + BALLWIDTH >= PLAYGROUNDWIDTH ? PLAYGROUNDWIDTH - BALLWIDTH : 0;
             this.dir = (Math.PI - this.dir) % (2 * Math.PI);
@@ -56,19 +57,15 @@ Ball.prototype.muovi =
 
         }
 
-        // rimbalzo su muro superiore
+        // rimbalzo su muro superiore ?
         if (this.y + BALLWIDTH >= PLAYGROUNDHEIGHT) {
             this.y = PLAYGROUNDHEIGHT - BALLWIDTH;
             this.dir = this.dir * (-1) + 2 * Math.PI;
         }
-        // caduta sul fondo
-        if (this.y <= 0) {/*
-        this.x = 14.5
-        this.y = 8
-        this.node.style.left = this.x + "vw";
-        this.node.style.bottom = this.y + "vw";
-        // voglio che parta da una direzione di salita e non voglio sia troppo orizzontale
-        this.dir = (Math.random() * (Math.PI - 0.30) + 0.15); */
+
+        
+        // caduta sul fondo? 
+        if (this.y <= 0) {
             return -1;
         }
 
@@ -104,7 +101,7 @@ Ball.prototype.calcolaDirRimbalzo =
 
 Ball.prototype.azzeraPosizione =
     function () {
-        this.x = 14.5;
+        this.x = 14.6;
         this.y = 8;
         this.node.style.bottom = this.y + "vw";
         this.node.style.left = this.x + "vw";
@@ -212,6 +209,5 @@ Ball.prototype.controlloBloccoBase =
 
 Ball.prototype.remove =
     function () {
-        playground = this.node.parentElement;
         playground.removeChild(this.node);
     }
