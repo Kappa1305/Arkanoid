@@ -10,16 +10,15 @@
     <title>Menu</title>
 </head>
 
-
-
-
 <body>
     <div id="main">
         <div id="barraInformazioni">
         </div>
         <div id="playground">
-            <img src="immagini/logo.svg" id="logo">
+            <img src="immagini/logo.png" id="logo">
             <a class="menu" href="selezionaLivello.php">Seleziona livello</a>
             <a class="menu" href="classifica.php?livello=1">Classifiche</a>
+            <a class="menu" href="ballskin.php">Seleziona Ball Skin</a>
+            <a class="menu" href="playerskin.php">Seleziona player Skin</a>
         </div>
 </body>

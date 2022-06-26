@@ -12,11 +12,11 @@ PowerUP.prototype.init =
         this.node = document.createElement("div");
         playground.appendChild(this.node);
         switch (tipo) {
-            case 1: this.class = "allunga"; break;
-            case 2: this.class = "accorcia"; break;
-            case 3: this.class = "calamita"; break;
-            case 4: this.class = "raddoppia"; break;
-            case 5: this.class = "proiettili"; break;
+            case 1: this.class = "allunga"; break;      // aumenta dimensioni del player
+            case 2: this.class = "accorcia"; break;     // diminuisce dimensioni del player
+            case 3: this.class = "calamita"; break;     // il player ferma le palline
+            case 4: this.class = "raddoppia"; break;    // ogni pallina viene raddoppiata
+            case 5: this.class = "proiettili"; break;   // il player spara proiettili che rompono i blocchi
         }
         this.x = x;
         this.y = y;
@@ -27,9 +27,11 @@ PowerUP.prototype.init =
         this.node.style.display = "block";
     }
 
+// permette la discesa dei power up e controlla se il player lo raccoglie
 PowerUP.prototype.scendi =
     function (playerX, playerLength) {
         this.y -= 0.1;
+        // raccolto dal player
         if (this.y <= 8 && this.y >= 6 && this.x + POWERUPWIDTH >= playerX && this.x <= playerX + playerLength) {
             this.remove();
             switch (this.class) {
@@ -40,6 +42,7 @@ PowerUP.prototype.scendi =
                 case "proiettili": return 5
             }
         }
+        // caduta sul fondo
         if (this.y <= 0) {
             this.remove();
             return -1;
@@ -48,6 +51,7 @@ PowerUP.prototype.scendi =
         return 0;
     }
 
+// funzione di utilità
 PowerUP.prototype.remove =
     function () {
         playground.removeChild(this.node);

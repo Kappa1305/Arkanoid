@@ -22,8 +22,10 @@ Proiettile.prototype.sali =
         this.y = this.y + 0.5;
         for (let i in blocks) {
             let block = blocks[i]
+            // controllo se il proiettile ha impattato con un blocco
             if (this.x >= block.x && this.x <= block.x + BLOCKWIDTH && Math.floor(this.y) == Math.floor(block.y)) {              // base inferiore
                 incPunteggio = block.hit();
+                // può esserci hit senza rottura del blocco
                 if (incPunteggio === null)
                     return 0;
                 this.remove();
@@ -38,23 +40,20 @@ Proiettile.prototype.sali =
             }
         }
         this.node.style.bottom = this.y + "vw";
+        // impatto con il bordo superiore del playground
         if (this.y == PLAYGROUNDHEIGHT) {
             this.remove();
             return 2;
         }
         return 0
     }
-
-Proiettile.prototype.remove =
-    function () {
-        playground.removeChild(this.node);
-    }
-
+// ogni proiettile viene fatto salire, si contano quanti blocchi sono stati colpiti in totale e
+// tale valore viene restituito
 function spara(proiettili, blocks) {
     let colpiti = 0
     for (let i in proiettili) {
         colpito = proiettili[i].sali(blocks);
-        if (colpito == 1) { // colpito un bloco
+        if (colpito == 1) { // colpito un blocco
             delete proiettili[i];
             colpiti++;
         }
@@ -63,3 +62,9 @@ function spara(proiettili, blocks) {
     }
     return colpiti;
 }
+
+// funzione di utilità
+Proiettile.prototype.remove =
+    function () {
+        playground.removeChild(this.node);
+    }

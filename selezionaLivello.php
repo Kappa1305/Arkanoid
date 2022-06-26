@@ -1,7 +1,20 @@
 <!DOCTYPE html>
 <html>
 
+
+
 <head>
+
+    <script>
+        document.addEventListener('keydown', tastoPremuto);
+
+        function tastoPremuto(e) {
+            e.stopPropagation();
+            if (e.keyCode == 8) // backspace
+                window.location = 'http://localhost/pong/menu.php';
+        }
+    </script>
+
     <meta name="description" content="pong">
     <link rel="stylesheet" href="pong.css">
 
@@ -37,9 +50,9 @@ while ($row = mysqli_fetch_assoc($result)) {
                 for ($j = 0; $j < 3; $j++) {
                     $level = $j + $i * 3 + 1;
                     if (in_array($level, $sbloccati))
-                        echo ('<td id="level' . $level . '"><a href="pong.php?level=' . $level . '"><img src="./immagini/livello' . $level . '.PNG" ></a></td>');
+                        echo ('<td id="level' . $level . '"><a href="pong.php?level=' . $level . '"><img  class="livello sbloccato" src="./immagini/livello' . $level . '.PNG" ></a></td>');
                     else
-                        echo ('<td id="level' . $level . '"><img src="./immagini/bloccato.jpg" class=""></td>');
+                        echo ('<td id="level' . $level . '"><img class="livello bloccato" src="./immagini/bloccato.jpg" class=""></td>');
                 }
                 echo ("</tr>");
             }

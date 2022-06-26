@@ -1,7 +1,31 @@
 <!DOCTYPE html>
 <html>
 
+
+
 <head>
+    <script>
+        document.addEventListener('keydown', tastoPremuto);
+
+        function tastoPremuto(e) {
+            e.stopPropagation();
+            if (e.keyCode == 8) // backspace
+                window.location = 'http://localhost/pong/menu.php';
+            <?php
+            $livello = $_GET["livello"];
+            $livelloPrecedente = $livello - 1;
+            if ($livelloPrecedente < 1)
+                $livelloPrecedente = 9;
+            $livelloSuccessivo = $livello + 1;
+            if ($livelloSuccessivo > 9)
+                $livelloSuccessivo = 1;
+            echo ("if (e.keyCode == 37) window.location = 'http://localhost/pong/classifica.php?livello=" . $livelloPrecedente . "';");
+            echo ("if (e.keyCode == 39) window.location = 'http://localhost/pong/classifica.php?livello=" . $livelloSuccessivo . "';");
+
+            ?>
+
+        }
+    </script>
     <meta name="description" content="Tavola Pitagorica">
     <script type="text/javascript" src="./js/controlloDati.js"></script>
     <link rel="stylesheet" href="./pong.css">
@@ -52,14 +76,14 @@ $i = 0;
                 </table>
             </div>
             <div class="selezionaClassifica">
-                
-            <?php
-                $livelloPrecedente = ($livello - 1) < 1 ? 1 : $livello - 1;
-                $livelloSuccessivo = ($livello + 1) >9 ? 9 : $livello + 1;
 
-                echo("<a class='classifica' href='classifica.php?livello=".$livelloPrecedente."'>←</a>");
-                echo("<a class='classifica' href='classifica.php?livello=".$livelloSuccessivo."'>→</a>"); 
-                ?>  
+                <?php
+                $livelloPrecedente = ($livello - 1) < 1 ? 1 : $livello - 1;
+                $livelloSuccessivo = ($livello + 1) > 9 ? 9 : $livello + 1;
+
+                echo ("<a class='classifica' href='classifica.php?livello=" . $livelloPrecedente . "'>←</a>");
+                echo ("<a class='classifica' href='classifica.php?livello=" . $livelloSuccessivo . "'>→</a>");
+                ?>
             </div>
             <a class="classifica" id="menu" href="menu.php">MENU</a>
         </div>

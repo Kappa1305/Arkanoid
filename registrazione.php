@@ -1,5 +1,14 @@
 <!DOCTYPE html>
 <html>
+<script>
+    document.addEventListener('keydown', tastoPremuto);
+
+    function tastoPremuto(e) {
+        e.stopPropagation();
+        if (e.keyCode == 17) // ctrl
+            window.location = 'http://localhost/pong/index.php';
+    }
+</script>
 
 <head>
     <meta name="description" content="Tavola Pitagorica">
@@ -15,16 +24,16 @@
     <div id="main">
         <div id="barraInformazioni"></div>
         <div id="playground">
-            <img src="immagini/logo.svg" id="logo">
+            <img src="immagini/logo.png" id="logo">
             <div id="login">
                 <form action="registrazione.php" method="POST" name="moduloRegistrazione">
                     username
-                    <input type="text" name="uname" id="INusername"/><br>
+                    <input type="text" name="uname" id="INusername" /><br>
                     password
-                    <input type="password" name="psw1" id="INpassword1"/><br>
+                    <input type="password" name="psw1" id="INpassword1" /><br>
                     conferma psw
-                    <input type="password" name="psw2" id="INpassword2"/><br>
-                    <input type="button" value="Registrazione" onclick="controlloDatiRegistrazione()"/>
+                    <input type="password" name="psw2" id="INpassword2" /><br>
+                    <input type="button" value="Registrazione" onclick="controlloDatiRegistrazione()" />
                 </form>
             </div>
         </div>
@@ -60,7 +69,7 @@ function registrazione($uname, $psw)
 {
     require_once "./connection.php";
     $pswHashed = password_hash($psw, PASSWORD_BCRYPT);
-    $sql = "INSERT INTO user VALUES (?, ?)";
+    $sql = "INSERT INTO user VALUES (?, ?, 1, 1)";
     $statement = mysqli_prepare($connection, $sql);
     mysqli_stmt_bind_param($statement, 'ss', $uname, $pswHashed);
     if (!mysqli_stmt_execute($statement)) {
@@ -69,9 +78,13 @@ function registrazione($uname, $psw)
     }
     $sql = "INSERT INTO sbloccato VALUE(" . "'" . $uname . "'" . ", 1, null)";
     mysqli_query($connection, $sql);
+    $sql = "INSERT INTO playerskin VALUE(1," . "'" . $uname . "'" . ")";
+    mysqli_query($connection, $sql);
+    $sql = "INSERT INTO ballskin VALUE(1," . "'" . $uname . "'" . ")";
+    mysqli_query($connection, $sql);
     echo ("<script>alert('Utente registrato con successo'); window.history.back(); </script>");
     $_SESSION["username"] = $uname;
-    header("location: ./selezionaLivello.php");
+    header("location: ./menu.php");
     exit();
 }
 ?>

@@ -10,20 +10,18 @@ function Block(x, y, type) {
 Block.prototype.init =
     function (x, y, type) {
         this.node = document.createElement("div");
+        // il type indica il colore e quindi la resistenza ai colpi e il punteggio ottenuto quando il 
+        // blocco viene rotto (valutato nella funzione Block.hit)
         this.node.setAttribute("class", "block " + type);
         playground.appendChild(this.node);
         this.type = type;
-        this.x = x;
-        this.y = y;
+        this.x = x * BLOCKWIDTH;
+        this.y = (16 - y) * BLOCKHEIGHT + 1;
         this.node.style.left = this.x + "vw";
         this.node.style.bottom = this.y + "vw";
         this.node.style.display = "block";
     }
 
-Block.prototype.remove =
-    function () {
-        playground.removeChild(this.node);
-    }
 
 Block.prototype.hit =
     function () {
@@ -39,4 +37,10 @@ Block.prototype.hit =
             case "gold-hitted": return 500;
         }
         return null;
+    }
+
+    // funzione di utilità
+Block.prototype.remove =
+    function () {
+        playground.removeChild(this.node);
     }

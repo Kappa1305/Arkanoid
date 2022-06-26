@@ -15,7 +15,7 @@
     <div id="main">
         <div id="barraInformazioni"></div>
         <div id="playground">
-            <img src="immagini/logo.svg" id="logo">
+            <img src="immagini/logo.png" id="logo">
             <div id="login">
                 <form action="index.php" method="POST" name="moduloLogin">
                     username
@@ -54,7 +54,7 @@ function login($uname, $psw)
         while (mysqli_stmt_fetch($statement)) {
             if (password_verify($psw, $pswHashed)) {
                 $_SESSION["username"] = $uname;
-                header("location: ./selezionaLivello.php");
+                header("location: ./menu.php");
                 return;
             }
         }
@@ -63,8 +63,10 @@ function login($uname, $psw)
 }
 
 if ($_POST) {
-    if (isset($_POST["registrazione"]))
+    if (isset($_POST["registrazione"])){
         registrazione($uname, $psw);
+        return;
+    }
     $uname = $_POST["uname"];
     $psw = $_POST["psw"];
 

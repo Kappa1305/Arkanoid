@@ -1,4 +1,4 @@
-function Ball(x = (PLAYGROUNDWIDTH - BALLWIDTH) / 2, y = 8, dir = 1, ferma = true) {
+function Ball(x = (PLAYGROUNDWIDTH - BALLWIDTH) / 2, y = 8, dir = 2, ferma = true) {
     this.x = 0;
     this.y = 0;
     this.dir = 0;
@@ -7,6 +7,7 @@ function Ball(x = (PLAYGROUNDWIDTH - BALLWIDTH) / 2, y = 8, dir = 1, ferma = tru
     this.init(x, y, dir, ferma);
 }
 
+// funzione chiamata quando si ottiene il power-up viola
 Ball.prototype.raddoppia =
     function () {
         nuovaBall = new Ball(this.x, this.y, this.dir + 1, false);
@@ -19,10 +20,9 @@ Ball.prototype.init =
         this.node.setAttribute("class", "ball");
         playground.appendChild(this.node);
         this.ferma = ferma;
-        // voglio che parta da una direzione di salita e non voglio sia troppo orizzontale
         this.dir = dir;
-        this.x = x // Math.random() * (MURODX - MUROSX);
-        this.y = y // Math.random() * (MUROTOP - 30) +15;
+        this.x = x;
+        this.y = y;
         this.aggiornaInc();
         this.node.style.left = this.x + "vw";
         this.node.style.bottom = this.y + "vw";
@@ -41,43 +41,47 @@ Ball.prototype.aggiornaInc =
 Ball.prototype.muovi =
     function (blocks, player) {
         // calcolo nuova posizione
-        this.x += this.incX
+        this.x += this.incX;
         this.y += this.incY;
 
         // memorizzo la vecchia direzione, mi servirà alla fine per sapere se devo ricalcolare
         // gli incrementi
         let lastDir = this.dir;
 
-        // rimbalzo contro i muri laterali ?
+        // rimbalzo contro i muri laterali ? se sì aggiorno la direzione
         if (this.x + BALLWIDTH >= PLAYGROUNDWIDTH || this.x <= 0) {
             this.x = this.x + BALLWIDTH >= PLAYGROUNDWIDTH ? PLAYGROUNDWIDTH - BALLWIDTH : 0;
             this.dir = (Math.PI - this.dir) % (2 * Math.PI);
+            // controllo sempre che la direzione stia in [0, 2pi]
             if (this.dir < 0)
                 this.dir += 2 * Math.PI;
 
         }
 
-        // rimbalzo su muro superiore ?
+        // rimbalzo su muro superiore ? se sì aggiorno la direzione
         if (this.y + BALLWIDTH >= PLAYGROUNDHEIGHT) {
             this.y = PLAYGROUNDHEIGHT - BALLWIDTH;
             this.dir = this.dir * (-1) + 2 * Math.PI;
         }
 
-        
-        // caduta sul fondo? 
+
+        // caduta sul fondo ? se sì la funzione chiamante lo saprà dal valore restituito
         if (this.y <= 0) {
             return -1;
         }
 
         // rimbalzo su player
+        // poichè la posizione della ball non sarà quasi mai coincidente con quella del player (la ball ha incrementi decimali dati dalle
+        // funzioni trigonometriche) lascio uno scarto di +0.5 e -0.5 unità
         if (this.y >= PLAYERBOTTOMDISTANCE - 0.5 && this.y <= PLAYERBOTTOMDISTANCE + 0.5 && this.x >= player.x && this.x <= player.x + player.length) {
             this.calcolaDirRimbalzo(player);
             this.y = 8;
         }
-        // modifico l'elemento html
+
         this.node.style.bottom = this.y + "vw";
         this.node.style.left = this.x + "vw";
-        // rimbalzo su blocco, ritorna 1 se ha colpito un blocco, 0 altrimenti
+
+        // rimbalzo su blocco, in caso di collisione ritorna l'oggetto blocco colpito, 0 altrimenti
         block = this.rimbalzoBlocco(blocks);
         if (lastDir != this.dir) {
             this.aggiornaInc();
@@ -92,6 +96,8 @@ Ball.prototype.calcolaDirRimbalzo =
     function (player) {
         puntoRimbalzo = (this.x - player.x) / player.length;
         this.dir = (Math.PI - 0.3) * (1 - puntoRimbalzo) + 0.15; // per non farla ribalzare troppo orizzontale
+        // nel caso fosse attivo il power-up calamita blocco la palla, se non controllassi che la ball non sia ferma non riuscirebbe mai
+        // a staccarsi
         if (player.calamita && !this.ferma) {
             player.fermaball(this, puntoRimbalzo);
             this.ferma = true;
@@ -99,14 +105,7 @@ Ball.prototype.calcolaDirRimbalzo =
         }
     }
 
-Ball.prototype.azzeraPosizione =
-    function () {
-        this.x = 14.6;
-        this.y = 8;
-        this.node.style.bottom = this.y + "vw";
-        this.node.style.left = this.x + "vw";
-    }
-
+// funzione per far sì che le ball ferme seguano il player
 Ball.prototype.seguiPlayer =
     function (x) {
         this.ferma = true;
@@ -119,28 +118,28 @@ Ball.prototype.rimbalzoBlocco =
         for (let i in blocks) {
             let block = blocks[i];
             // controllo se ha colpito uno dei due lati del blocco
-            let cbl = this.controlloBloccoLaterale(block)
+            let cbl = this.controlloBloccoLaterale(block);
             if (cbl) {
                 if (this.y + BALLWIDTH / 2 >= block.y && this.y + BALLWIDTH / 2 <= block.y + BLOCKHEIGHT) {
                     if (cbl == 1) {  // lato sinistro
+                        // se la ball non ha questa direzione non può colpire il muro sx
                         if (this.dir > (1 / 2) * Math.PI && this.dir < (3 / 2) * Math.PI)
                             return 0;
                         this.x = block.x - BALLWIDTH; // aggiusto la posizione virtuale
                     }
                     else { // lato destro
+                        // se la ball non ha questa direzione non può colpire il muro dx
                         if (this.dir >= 0 && this.dir < Math.PI / 2 || this.dir >= (3 / 2) * Math.PI && this.dir < 2 * Math.PI)
                             return 0;
                         this.x = block.x + BLOCKWIDTH;
                     }
+                    // mantengo la dir in [0, 2pi]
                     this.dir = (Math.PI - this.dir) % (2 * Math.PI);
                     if (this.dir < 0)
                         this.dir += 2 * Math.PI
-                    incPunteggio = block.hit();
-                    if (incPunteggio) {
+                    if (block.hit()) {
                         block.remove();
                         delete blocks[i];
-                        punteggio = document.getElementById("punteggio");
-                        punteggio.textContent = +punteggio.textContent + +incPunteggio;
                         return block;
                     }
                 }
@@ -160,13 +159,9 @@ Ball.prototype.rimbalzoBlocco =
                         this.y = block.y + BLOCKHEIGHT;
                     }
                     this.dir = this.dir * (-1) + 2 * Math.PI;
-                    punteggio = document.getElementById("punteggio");
-                    incPunteggio = block.hit();
-                    if (incPunteggio) {
+                    if (block.hit()) {
                         block.remove();
                         delete blocks[i];
-                        punteggio = document.getElementById("punteggio");
-                        punteggio.textContent = +punteggio.textContent + incPunteggio;
                         return block;
                     }
                 }
@@ -175,13 +170,16 @@ Ball.prototype.rimbalzoBlocco =
         return 0;
     }
 
-// la condizione sulla direzione fa sì che si evitino rimbalzi incosistenti con la fisica del moto
+// il controllo dell'impatto contro un blocco viene fatto valutando il centro della ball aprrossimando 
+// la posizione tra [-scartoin, scartoout], se un lato di un blocco è in questo range allora si considera
+// un possibile impatto (verrà successivamente controllata la y )
+// il valore restituito indica quale lato è stato (ipoteticamente) colpito
 Ball.prototype.controlloBloccoLaterale =
     function (block) {
         // impatto con parte sinistra
         if ((Math.floor((this.x + BALLWIDTH - SCARTOOUT)) <= block.x
             && Math.floor((this.x + BALLWIDTH + SCARTOINLATERALE)) >= block.x)) {
-            return 1;
+            return 1; 
         }
         // impatto con parte destra
         else if (Math.floor((this.x - SCARTOINLATERALE)) <= (block.x + BLOCKWIDTH)
@@ -205,6 +203,15 @@ Ball.prototype.controlloBloccoBase =
         }
         else
             return false;
+    }
+
+// funzioni di utilità
+Ball.prototype.azzeraPosizione =
+    function () {
+        this.x = 14.6;
+        this.y = 8;
+        this.node.style.bottom = this.y + "vw";
+        this.node.style.left = this.x + "vw";
     }
 
 Ball.prototype.remove =

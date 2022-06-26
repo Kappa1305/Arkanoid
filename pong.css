@@ -56,7 +56,6 @@ p{
     box-shadow: 0.3vw 0.3vw black;
     width: 8vw;
     height: 1vw;
-    background: linear-gradient(180deg, rgba(255, 155, 60, 1) 28%, rgba(0, 65, 255, 1) 68%);
     border-radius: 0.5vw;
     position: absolute;
     bottom: 4%;
@@ -67,7 +66,6 @@ p{
     position: absolute;
     width: 0.8vw;
     height: 0.8vw;
-    background: radial-gradient(circle, rgba(223, 223, 223, 1) 16%, rgba(157, 157, 157, 1) 36%);
     border-radius: 50%;
 }
 
@@ -99,6 +97,10 @@ p{
     text-transform: uppercase;
 }
 
+#login button{
+    font-size: 1.5vw;
+    width: auto;
+}
 
 #login input{
     margin:auto;
@@ -262,21 +264,22 @@ p{
 \*--------------------------------------*/
 
 .powerUP {
+    box-shadow: 0.3vw 0.3vw black;
     width: 2vw;
     height: 0.5vw;
     position: absolute;
 }
 
 .powerUP.allunga {
-    background-color: chartreuse;
+    background-color: green;
 }
 
 .powerUP.accorcia {
-    background-color: darkorange;
+    background-color: red;
 }
 
 .powerUP.calamita {
-    background-color: black;
+    background: linear-gradient(90deg, rgba(21,7,251,1) 50%, rgba(231,18,18,1) 50%); 
 }
 
 .powerUP.raddoppia {
@@ -284,7 +287,42 @@ p{
 }
 
 .powerUP.proiettili {
-    background-color: gray;
+    background: linear-gradient(90deg, rgba(21,7,251,1) 20%, rgba(232,255,0,1) 20%, rgba(232,255,0,1) 30%, rgba(21,7,251,1) 30%, rgba(21,7,251,1) 71%, rgba(232,255,0,1) 71%, rgba(232,255,0,1) 80%, rgba(21,7,251,1) 80%)
+}
+
+/*--------------------------------------*\
+|                 Skin                   |
+\*--------------------------------------*/
+
+img.skin{
+    width: 90%;
+}
+
+img.skin.sbloccata{
+    border: 0.5vw white solid;
+}
+
+img.skin.selezionata{
+    border: 0.5vw solid green;
+}
+
+img.skin.bloccata{
+    border: 0.5vw solid black;
+}
+
+/*--------------------------------------*\
+|               livelli                  |
+\*--------------------------------------*/
+img.livello{
+    width: 90%;
+}
+
+img.livello.sbloccato{
+    border: 0.5vw white solid;
+}
+
+img.livello.bloccato{
+    border: 0.5vw black solid;
 }
 
 /*--------------------------------------*\
@@ -372,7 +410,7 @@ a.classifica{
 a.menu{
     display: block;
     text-align: center;
-    font-size: 4vw;
+    font-size: 2vw;
     margin-top: 4vw;
     text-decoration: none;
     font-family: "Candara",'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -391,8 +429,7 @@ a.menu{
     width: 20vw;
     position: relative;
     top: 5vw;
-    border: inherit;
-    border-radius: inherit;
+    border: solid 1vw white;
     height: 25vw;
 }
 
@@ -408,3 +445,17 @@ a.menu{
     color: white;
 }
 
+#timer{
+    position: relative;
+    left: -4vw;
+    font-size: 2vw;
+    width: 3vw;
+}
+
+.timer{
+    display: inline;
+}
+
+.skinSelected{
+    border: red 2px solid;
+}
