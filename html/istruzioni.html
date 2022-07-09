@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <script>
+        document.addEventListener('keydown', tastoPremuto);
+
+        function tastoPremuto(e) {
+            e.stopPropagation();
+            if (e.keyCode == 8) // backspace
+                window.location = '../php/menu.php';
+        }
+    </script>
+    <meta name="description" content="arkanoid">
+    <link rel="stylesheet" href="../arkanoid.css">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Arkanoid</title>
+</head>
+
+<body>
+    <div id="main">
+        <div id="barraInformazioni"></div>
+        <div id="playground">
+            <img alt="Logo Arkanoid" src="../immagini/logo.png" id="logo">
+
+            <div class="istruzioni">
+                <p>
+                    Arkanoid è un gioco arcade in cui l'obiettivo è distruggere tutti i blocchi sullo
+                    schermo muovendo col mouse una barretta in orizzontale evitando di far cadere
+                    le palline sul fondo.
+                </p>
+                <br>
+                <p>
+                    Distruggendo i blocchi è possibile ottenere dei power up: calamita, multiball, proiettili,
+                    allunga barretta, accorcia barretta.
+                </p>
+                <br>
+                <p>
+                    Nel gioco i livelli vengono sbloccati completando il livello precedente.
+                    Ad ogni livello corrisponde una classifica in cui i giocatori possono competere per
+                    ottenere il massimo punteggio; i punti si ottengono distruggendo i blocchi e completando
+                    il livello nel minor tempo possibile, vengono invece persi punti quando una pallina cade
+                    sul fondo.
+                </p>
+                <br>
+                <p>
+                    Possono essere sbloccate le skin per la barretta e per le ball completando le
+                    missioni.
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,5 +1,5 @@
 <?php
-require_once "./Connection.php";
+require_once "./connection.php";
 
 if ($_POST) {
     $livello = $_POST["livello"];

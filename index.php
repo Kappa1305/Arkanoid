@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="it">
 
 <head>
-    <meta name="description" content="Tavola Pitagorica">
-    <script type="text/javascript" src="./js/controlloDati.js"></script>
-    <link rel="stylesheet" href="./pong.css">
+    <meta name="description" content="Arkanoid">
+    <script src="./js/controlloDati.js"></script>
+    <link rel="stylesheet" href="./arkanoid.css">
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
     <title>Login&Password</title>
@@ -15,7 +15,7 @@
     <div id="main">
         <div id="barraInformazioni"></div>
         <div id="playground">
-            <img src="immagini/logo.png" id="logo">
+            <img alt="Logo arkanoid" src="/arkanoid/immagini/logo.png" id="logo">
             <div id="login">
                 <form action="index.php" method="POST" name="moduloLogin">
                     username
@@ -38,12 +38,12 @@
 
 function registrazione()
 {
-    header("location: ./registrazione.php");
+    header("location: php/registrazione.php");
 }
 
 function login($uname, $psw)
 {
-    require_once "./connection.php";
+    require_once "./php/connection.php";
     $sql = "SELECT hash_psw FROM user WHERE username = ?";
     if ($statement = mysqli_prepare($connection, $sql)) {
         mysqli_stmt_bind_param($statement, 's', $uname);
@@ -54,11 +54,11 @@ function login($uname, $psw)
         while (mysqli_stmt_fetch($statement)) {
             if (password_verify($psw, $pswHashed)) {
                 $_SESSION["username"] = $uname;
-                header("location: ./menu.php");
+                header("location: ./php/menu.php");
                 return;
             }
         }
-        echo ("Login fallito");
+        echo ("<script>alert('Errore: Login fallito');  </script>");
     }
 }
 

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="it">
 
 
 
@@ -10,7 +10,7 @@
         function tastoPremuto(e) {
             e.stopPropagation();
             if (e.keyCode == 8) // backspace
-                window.location = 'http://localhost/pong/menu.php';
+                window.location = 'menu.php';
             <?php
             $livello = $_GET["livello"];
             $livelloPrecedente = $livello - 1;
@@ -19,16 +19,15 @@
             $livelloSuccessivo = $livello + 1;
             if ($livelloSuccessivo > 9)
                 $livelloSuccessivo = 1;
-            echo ("if (e.keyCode == 37) window.location = 'http://localhost/pong/classifica.php?livello=" . $livelloPrecedente . "';");
-            echo ("if (e.keyCode == 39) window.location = 'http://localhost/pong/classifica.php?livello=" . $livelloSuccessivo . "';");
+            echo ("if (e.keyCode == 37) window.location = 'classifica.php?livello=" . $livelloPrecedente . "';");
+            echo ("if (e.keyCode == 39) window.location = 'classifica.php?livello=" . $livelloSuccessivo . "';");
 
             ?>
 
         }
     </script>
-    <meta name="description" content="Tavola Pitagorica">
-    <script type="text/javascript" src="./js/controlloDati.js"></script>
-    <link rel="stylesheet" href="./pong.css">
+    <meta name="description" content="Arkanoid">
+    <link rel="stylesheet" href="../arkanoid.css">
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
     <title>Classifica</title>
@@ -37,7 +36,7 @@
 
 <?php
 $livello = $_GET["livello"];
-require_once "./Connection.php";
+require_once "./connection.php";
 $sql = "SELECT username, highscore
         FROM sbloccato
         WHERE livello = $livello and highscore is not null

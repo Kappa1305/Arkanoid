@@ -1,19 +1,19 @@
 <!DOCTYPE html>
-<html>
+<html lang="it">
 <script>
     document.addEventListener('keydown', tastoPremuto);
 
     function tastoPremuto(e) {
         e.stopPropagation();
         if (e.keyCode == 17) // ctrl
-            window.location = 'http://localhost/pong/index.php';
+            window.location = '../index.php';
     }
 </script>
 
 <head>
-    <meta name="description" content="Tavola Pitagorica">
-    <link rel="stylesheet" href="./pong.css">
-    <script type="text/javascript" src="./js/controlloDati.js"></script>
+    <meta name="description" content="Arkanoid">
+    <link rel="stylesheet" href="../arkanoid.css">
+    <script  src="../js/controlloDati.js"></script>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
     <title>Login&Password</title>
@@ -24,7 +24,7 @@
     <div id="main">
         <div id="barraInformazioni"></div>
         <div id="playground">
-            <img src="immagini/logo.png" id="logo">
+            <img alt="Logo arkanoid" src="../immagini/logo.png" id="logo">
             <div id="login">
                 <form action="registrazione.php" method="POST" name="moduloRegistrazione">
                     username
@@ -84,7 +84,7 @@ function registrazione($uname, $psw)
     mysqli_query($connection, $sql);
     echo ("<script>alert('Utente registrato con successo'); window.history.back(); </script>");
     $_SESSION["username"] = $uname;
-    header("location: ./menu.php");
+    header("location: menu.php");
     exit();
 }
 ?>

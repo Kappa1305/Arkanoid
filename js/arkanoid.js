@@ -2,7 +2,7 @@ document.addEventListener('keydown', tastoPremuto);
 
 function tastoPremuto(e) {
     if (e.keyCode == 8) // backspace
-        window.location = 'http://localhost/pong/selezionaLivello.php';
+        window.location = '../php/selezionaLivello.php';
 }
 
 var playground;
@@ -36,40 +36,11 @@ function Game(level) {
     document.addEventListener('keydown', this.keyDown.bind(this));
 }
 
-Game.prototype.raddoppiaPalline =
-    function () {
-        let tempNuoveBall = new Array;
-        for (i in this.ball) {
-            tempNuoveBall[i] = this.ball[i].raddoppia();
-            this.ballAttive++;
-        }
-        for (i in tempNuoveBall) {
-            this.ball.push(tempNuoveBall[i]);
-        }
-    }
-
-Game.prototype.selezionaLivello =
-    function () {
-        this.blocks = new Array;
-        this.powerUP = new Array;
-        switch (this.level) {
-            case 1: this.rimasti = livello1(this.blocks); break;
-            case 2: this.rimasti = livello2(this.blocks); break;
-            case 3: this.rimasti = livello3(this.blocks); break;
-            case 4: this.rimasti = livello4(this.blocks); break;
-            case 5: this.rimasti = livello5(this.blocks); break;
-            case 6: this.rimasti = livello6(this.blocks); break;
-            case 7: this.rimasti = livello7(this.blocks); break;
-            case 8: this.rimasti = livello8(this.blocks); break;
-            case 9: this.rimasti = livello9(this.blocks); break;
-            default: window.location = "selezionaLivello.php"; return;
-        }
-        this.movimento = setInterval(this.clock.bind(this), clockTime);
-    }
-
 Game.prototype.clock =
     function () {
         for (let i in this.ball) {
+            // le palline ferme sono quelle bloccate sul pkayer (prima del begin o per 
+            // effetto della calamita)
             if (!this.ball[i].ferma) {
                 let avvenimento = this.ball[i].muovi(this.blocks, this.player);
                 // 0 = nulla, 1 = colpito un blocco, -1 = ball sul fondo
@@ -80,6 +51,8 @@ Game.prototype.clock =
                     aggiornaPunteggio(this.punteggio);
                     this.ball[i].remove();
                     delete this.ball[i];
+                    // controllo che siano rimaste delle ball attive (potrebbero esserci state più
+                    // ball in gioco contemporaneamente)
                     if (--this.ballAttive == 0) {
                         this.ball = new Array;
                         this.ball[0] = new Ball();
@@ -95,11 +68,12 @@ Game.prototype.clock =
                 }
                 else if (avvenimento) { // colpito un blocco, la funzione restituisce l'oggetto block
                     this.rimasti--;
-                    tipoPowerUP = Math.floor(Math.random() * 15) + 1;
                     this.punteggio += avvenimento.hit();
                     aggiornaPunteggio(this.punteggio);
 
+                    tipoPowerUP = Math.floor(Math.random() * 15) + 1;
                     if (tipoPowerUP <= 5) {
+                        // creo il power up alle stesse coordinate del blocco colpito
                         bloccoColpitox = avvenimento.x;
                         bloccoColpitoy = avvenimento.y;
                         this.powerUP.push(new PowerUP(bloccoColpitox, bloccoColpitoy, tipoPowerUP));
@@ -107,6 +81,7 @@ Game.prototype.clock =
                 }
             }
         }
+        // spara mi restituisce il numero di blocchi colpiti dai proiettili
         colpiti = spara(this.proiettili, this.blocks)
         if (colpiti) {
             this.rimasti = this.rimasti - colpiti;
@@ -114,6 +89,7 @@ Game.prototype.clock =
             aggiornaPunteggio(this.punteggio);
         }
         if (this.rimasti == 0) {
+            // 0 significa partita terminata con win
             this.terminaPartita(0);
             return;
         }
@@ -132,56 +108,24 @@ Game.prototype.clock =
         }
     }
 
-function aggiornaPunteggio(punteggio) {
-    nodePunteggio = document.getElementById("punteggio");
-    nodePunteggio.textContent = punteggio;
-}
-
-Game.prototype.mouseMove =
-    function (e) {
-        this.player.muoviMouse(e);
-        for (i in this.player.ballFerme) {
-            this.player.ballFerme[i].seguiPlayer(this.player.x + this.player.posizioneBallFerme[i] * this.player.length);
+Game.prototype.selezionaLivello =
+    function () {
+        this.blocks = new Array;
+        this.powerUP = new Array;
+        switch (this.level) {
+            // le funzioni restituiscono il numero di blocchi nel livello
+            case 1: this.rimasti = livello1(this.blocks); break;
+            case 2: this.rimasti = livello2(this.blocks); break;
+            case 3: this.rimasti = livello3(this.blocks); break;
+            case 4: this.rimasti = livello4(this.blocks); break;
+            case 5: this.rimasti = livello5(this.blocks); break;
+            case 6: this.rimasti = livello6(this.blocks); break;
+            case 7: this.rimasti = livello7(this.blocks); break;
+            case 8: this.rimasti = livello8(this.blocks); break;
+            case 9: this.rimasti = livello9(this.blocks); break;
+            default: window.location = "selezionaLivello.php"; return;
         }
-    }
-
-Game.prototype.mouseDown =
-    function () {
-        for (i in this.player.ballFerme) {
-            this.player.ballFerme[i].ferma = false;
-            delete this.player.ballFerme[i];
-        }
-    }
-
-Game.prototype.keyDown =
-    function (e) {
-        if (e.keyCode == 32) // spacebar
-            for (i in this.player.ballFerme) {
-                this.player.ballFerme[i].ferma = false;
-                delete this.player.ballFerme[i];
-            }
-    }
-
-
-Game.prototype.creaProiettili =
-    function (proiettili, x1, x2) {
-        proiettili.push(new Proiettile(x1 + 1))
-        proiettili.push(new Proiettile(x2 - 1))
-        if (--this.proiettiliToSend == 0)
-            clearInterval(this.creaProiettiliInterval)
-    }
-
-
-Game.prototype.prossimoLivello =
-    function () {
-        while (playground.firstChild) { playground.removeChild(playground.firstChild); }
-        new Game(this.level + 1);
-    }
-
-Game.prototype.riprovaLivello =
-    function () {
-        while (playground.firstChild) { playground.removeChild(playground.firstChild); }
-        new Game(this.level);
+        this.movimento = setInterval(this.clock.bind(this), clockTime);
     }
 
 
@@ -199,6 +143,25 @@ Game.prototype.vitaPersa =
             vite.textContent = this.lives;
     }
 
+
+Game.prototype.prossimoLivello =
+    function () {
+        while (playground.firstChild) { playground.removeChild(playground.firstChild); }
+        new Game(this.level + 1);
+    }
+
+Game.prototype.riprovaLivello =
+    function () {
+        while (playground.firstChild) { playground.removeChild(playground.firstChild); }
+        new Game(this.level);
+    }
+
+function aggiornaPunteggio(punteggio) {
+    nodePunteggio = document.getElementById("punteggio");
+    nodePunteggio.textContent = punteggio;
+}
+
+// pulisco il playground
 Game.prototype.azzeraPlayground = function (finePartita) {
 
     this.player.reset();
@@ -224,18 +187,6 @@ Game.prototype.azzeraPlayground = function (finePartita) {
     }
 }
 
-function aggiornaRecordESbloccati(livello, punteggio, secondiRimanenti) {
-
-    var xmlHttp = new XMLHttpRequest();
-
-    var parametro = 'livello=' + livello + '&punteggio=' + punteggio + '&secondiRimanenti=' + secondiRimanenti;
-    xmlHttp.open("POST", "AggiornaRecordESbloccati.php", true);
-    xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xmlHttp.send(parametro);
-    xmlHttp.onload = function () {
-    }
-}
-
 Game.prototype.terminaPartita =
     function (esito) {
         playground.style.cursor = "";
@@ -244,36 +195,34 @@ Game.prototype.terminaPartita =
         this.punteggio += punteggioTimer;
         aggiornaPunteggio(this.punteggio);
 
+        // aggiorna l'highscore e se il livello successivo non era ancora stato sbloccato lo sblocca, controlla le skin sbloccate
         aggiornaRecordESbloccati(this.level, this.punteggio, secondiRimanenti);
 
+        // pulisco lo schermo
         this.azzeraPlayground(true);
         playground.removeChild(this.player.node);
-        // Elimino le informazioni
-        // var daRimuovere = document.getElementById('informazioni');
-        // document.body.removeChild(daRimuovere);
-        // Creo il div che conterra' i risultati
         this.risultatiNode = document.createElement('div');
         this.risultatiNode.setAttribute('id', 'risultato');
         playground.appendChild(this.risultatiNode);
 
         // Creo il tasto per tornare alla schermata principale
-
         this.ritornoScritta = new Array(3);
         this.ritornoTesto = new Array(3);
         this.ritornoScritta[0] = document.createElement('h1');
         this.ritornoScritta[0].setAttribute('class', 'finePartita');
-        if (esito == 0) {
+        if (esito == 0) { // won
             let nextLevel = 1 + +this.level;
             this.ritornoTesto[0] = document.createTextNode('PROSSIMO LIVELLO');
-            this.ritornoScritta[0].setAttribute('onclick', "window.location.href = 'pong.php?level=" + nextLevel + "'");
+            this.ritornoScritta[0].setAttribute('onclick', "window.location.href = 'arkanoid.php?level=" + nextLevel + "'");
         }
-        else {
+        else { // lost
             this.ritornoTesto[0] = document.createTextNode('RIPROVA');
-            this.ritornoScritta[0].setAttribute('onclick', "window.location.href = 'pong.php?level=" + this.level + "'");
+            this.ritornoScritta[0].setAttribute('onclick', "window.location.href = 'arkanoid.php?level=" + this.level + "'");
         }
         this.risultatiNode.appendChild(this.ritornoScritta[0]);
         this.ritornoScritta[0].appendChild(this.ritornoTesto[0]);
 
+        // torna alla selezione del livello
         this.ritornoScritta[1] = document.createElement('h1');
         this.ritornoScritta[1].setAttribute('class', 'finePartita');
         this.ritornoTesto[1] = document.createTextNode('SELEZIONA LIVELLO');
@@ -281,6 +230,7 @@ Game.prototype.terminaPartita =
         this.risultatiNode.appendChild(this.ritornoScritta[1]);
         this.ritornoScritta[1].setAttribute('onclick', "window.location.href = 'selezionaLivello.php'");
 
+        // visualizza classifica highscore del livello giocato
         this.ritornoScritta[2] = document.createElement('h1');
         this.ritornoScritta[2].setAttribute('class', 'finePartita');
         this.ritornoTesto[2] = document.createTextNode('VISUALIZZA CLASSIFICA');
@@ -290,11 +240,81 @@ Game.prototype.terminaPartita =
         this.ritornoScritta[2].setAttribute('onclick', "window.location.href = 'classifica.php?livello=" + this.level + "'");
     }
 
+
+function aggiornaRecordESbloccati(livello, punteggio, secondiRimanenti) {
+
+    var xmlHttp = new XMLHttpRequest();
+    // invio richiesta di controllo del punteggio
+    var parametro = 'livello=' + livello + '&punteggio=' + punteggio + '&secondiRimanenti=' + secondiRimanenti;
+    xmlHttp.open("POST", "AggiornaRecordESbloccati.php", true);
+    xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xmlHttp.send(parametro);
+    xmlHttp.onload = function () {
+    }
+}
+
+
+// funzioni legate ai power up{
+Game.prototype.raddoppiaPalline =
+    function () {
+        // per ogni ball attiva ne creo un'altra e la aggiungo a un vettore temporaneo
+        let tempNuoveBall = new Array;
+        for (i in this.ball) {
+            tempNuoveBall[i] = this.ball[i].raddoppia();
+            this.ballAttive++;
+        }
+        // aggiungo tutte le ball del vettore temporaneo al vettore principale
+        for (i in tempNuoveBall) {
+            this.ball.push(tempNuoveBall[i]);
+        }
+    }
+
+// creo un proiettile a destra e a sinistra del player
+Game.prototype.creaProiettili =
+    function (proiettili, x1, x2) {
+        proiettili.push(new Proiettile(x1 + 1))
+        proiettili.push(new Proiettile(x2 - 1))
+        if (--this.proiettiliToSend == 0)
+            clearInterval(this.creaProiettiliInterval)
+    }
+
+
 Game.prototype.attivaProiettili =
     function () {
         this.player.reset();
+        // se era già stato raccolto un power up proiettili utilizzo lo stesso interval
         if (this.proiettiliToSend == 0)
             this.creaProiettiliInterval = setInterval(() => this.creaProiettili(this.proiettili, this.player.x, this.player.x + this.player.length, 8), 500)
-        this.proiettiliToSend += 5;
+        // se era già stato raccolto un power up proiettili al numero di proiettili rimanenti ne vengono aggiunti 5
+            this.proiettiliToSend += 5;
     }
-    
+
+// } funzioni legate ai power up
+
+// funzioni legate ai listener {
+Game.prototype.mouseMove =
+    function (e) {
+        this.player.muoviMouse(e);
+        for (i in this.player.ballFerme) {
+            this.player.ballFerme[i].seguiPlayer(this.player.x + this.player.posizioneBallFerme[i] * this.player.length);
+        }
+    }
+
+Game.prototype.mouseDown =
+    function () {
+        for (i in this.player.ballFerme) {
+            this.player.ballFerme[i].ferma = false;
+            delete this.player.ballFerme[i];
+        }
+    }
+
+Game.prototype.keyDown =
+    function (e) {
+        if (e.keyCode == 32) // spacebar
+            for (i in this.player.ballFerme) {
+                this.player.ballFerme[i].ferma = false;
+                delete this.player.ballFerme[i];
+            }
+    }
+
+// } funzioni legate ai listener 

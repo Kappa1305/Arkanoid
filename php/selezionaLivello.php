@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="it">
 
 
 
@@ -11,21 +11,21 @@
         function tastoPremuto(e) {
             e.stopPropagation();
             if (e.keyCode == 8) // backspace
-                window.location = 'http://localhost/pong/menu.php';
+                window.location = 'menu.php';
         }
     </script>
 
-    <meta name="description" content="pong">
-    <link rel="stylesheet" href="pong.css">
+    <meta name="description" content="arkanoid">
+    <link rel="stylesheet" href="../arkanoid.css">
 
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
-    <title>Pear Ball</title>
+    <title>Arkanoid</title>
 </head>
 
 <?php
 
-require_once "./Connection.php";
+require_once "./connection.php";
 $sql = "SELECT livello
         FROM sbloccato
             WHERE username ='" . $_SESSION["username"] . "';";
@@ -40,7 +40,7 @@ while ($row = mysqli_fetch_assoc($result)) {
 
 <div id="main">
     <div id="barraInformazioni" class="selezionaLivello">
-        <text>SELEZIONA LIVELLO</text>
+        <p>SELEZIONA LIVELLO</p>
     </div>
     <div id="playground">
         <table>
@@ -50,9 +50,9 @@ while ($row = mysqli_fetch_assoc($result)) {
                 for ($j = 0; $j < 3; $j++) {
                     $level = $j + $i * 3 + 1;
                     if (in_array($level, $sbloccati))
-                        echo ('<td id="level' . $level . '"><a href="pong.php?level=' . $level . '"><img  class="livello sbloccato" src="./immagini/livello' . $level . '.PNG" ></a></td>');
+                        echo ('<td class="livello" id="level' . $level . '"><a href="arkanoid.php?level=' . $level . '"><img alt="livello' . $level . ' sbloccato" class="livello sbloccato" src="../immagini/livello' . $level . '.PNG" ></a></td>');
                     else
-                        echo ('<td id="level' . $level . '"><img class="livello bloccato" src="./immagini/bloccato.jpg" class=""></td>');
+                        echo ('<td class="livello" id="level' . $level . '"><img alt="livello bloccato" class="livello bloccato" src="../immagini/bloccato.jpg" class=""></td>');
                 }
                 echo ("</tr>");
             }

@@ -1,5 +1,5 @@
 <?php header("Content-type: text/css");
-require_once "./Connection.php";
+require_once "./connection.php";
 $sql = "SELECT playerskin, ballskin
         FROM user
         WHERE username ='" . $_SESSION["username"] . "';";

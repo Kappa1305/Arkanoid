@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="it">
 
 <head>
     <script>
@@ -8,20 +8,20 @@
         function tastoPremuto(e) {
             e.stopPropagation();
             if (e.keyCode == 8) // backspace
-                window.location = 'http://localhost/pong/menu.php';
+                window.location = 'menu.php';
         }
     </script>
-    <meta name="description" content="pong">
-    <link rel="stylesheet" href="pong.css">
+    <meta name="description" content="arkanoid">
+    <link rel="stylesheet" href="../arkanoid.css">
 
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
-    <title>Pear player</title>
+    <title>Arkanoid</title>
 </head>
 
 <?php
 
-require_once "./Connection.php";
+require_once "./connection.php";
 
 if ($_GET) {
     $skin = $_GET["skin"];
@@ -62,7 +62,7 @@ while ($row = mysqli_fetch_assoc($result)) {
 
     <div id="main">
         <div id="barraInformazioni" class="selezionaLivello">
-            <text>SELEZIONA SKIN</text>
+            <p>SELEZIONA SKIN</p>
         </div>
         <div id="playground">
             <table>
@@ -73,11 +73,11 @@ while ($row = mysqli_fetch_assoc($result)) {
                         $skin = $j + $i * 3 + 1;
                         if (in_array($skin, $sbloccati))
                             if ($skin == $skinSelezionata)
-                                echo ('<td><img class = "skin selezionata" src="./immagini/playerskin' . $skin . '.PNG" ></a></td>');
+                                echo ('<td><img alt="skin' . $skin . ' selezionata" class = "skin selezionata" src="../immagini/playerskin' . $skin . '.PNG" ></a></td>');
                             else
-                                echo ('<td><a href="playerskin.php?skin=' . $skin . '"><img class = "skin sbloccata" src="./immagini/playerskin' . $skin . '.PNG" ></a></td>');
+                                echo ('<td><a href="playerskin.php?skin=' . $skin . '"><img alt="skin' . $skin . ' sbloccata" class = "skin sbloccata" src="../immagini/playerskin' . $skin . '.PNG" ></a></td>');
                         else
-                            echo ('<td><img  onclick="alert(\'' . $messaggio[$skin] . '\')" class = "skin bloccata" src="./immagini/bloccato.jpg" class=""></td>');
+                            echo ('<td><img alt="skin' . $skin . ' blocata" onclick="alert(\'' . $messaggio[$skin] . '\')" class = "skin bloccata" src="../immagini/bloccato.jpg" class=""></td>');
                     }
                     echo ("</tr>");
                 }
